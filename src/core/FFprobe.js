@@ -58,6 +58,17 @@ export class FFprobe {
           message: errors['FFMPEG_STREAMS_NOT_FOUND']
         }
       }
+      if (this.config.minHeight > 0) {
+        const stream = metadata.streams.find(s => s['codec_type'] === 'video');
+        let hasMinHeight = stream ? stream.height >= this.config.minHeight : false;
+        if(!stream || !hasMinHeight){
+          return {
+            ok: false,
+            code: 'CONFIG_STREAM_HAS_NOT_MIN_HEIGHT_RES',
+            message: errors['CONFIG_STREAM_HAS_NOT_MIN_HEIGHT_RES']
+          }
+        }
+      }
 
       return { ok: true, code: 'OK', metadata }
     } catch (err) {

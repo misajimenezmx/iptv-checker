@@ -18,6 +18,7 @@ const defaultConfig = {
   parallel: cpus().length,
   delay: 0,
   retry: 0,
+  minHeight: 0,
   setUp: () => {},
   afterEach: () => {},
   beforeEach: () => {}
