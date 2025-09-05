@@ -21,6 +21,8 @@ export class FFprobe {
     this.errorParser = new FFprobeErrorParser()
     this.config = config
     this.logger = logger
+    this.hostWhitelist = new Set();
+    this.hostBlacklist = new Set();
   }
 
   async check(item) {
@@ -33,13 +35,25 @@ export class FFprobe {
 
     try {
       let output = {}
+      const hostname = (new URL(item.url)).hostname;
       if (TESTING) {
         const ffprobeOutput = (await import('../../tests/__mocks__/ffprobe.js')).default
         output = ffprobeOutput[item.url]
       } else {
-        if(await isStreamLive(item.url) === true){
+        if(this.hostWhitelist.has(hostname)){
+          return { ok: true, code: 'OK', metadata: null }
+        }
+        if(this.hostBlacklist.has(hostname)){
+          return {
+            ok: false,
+            code: 'HTTP_REQUEST_TIMEOUT',
+            message: errors['HTTP_REQUEST_TIMEOUT']
+          }
+        }
+        if((await isStreamLive(item.url)) === true){
           output = await execAsync(command, { timeout })
         }else{
+          this.hostBlacklist.add(hostname)
           return {
             ok: false,
             code: 'HTTP_REQUEST_TIMEOUT',
@@ -71,6 +85,8 @@ export class FFprobe {
           code: 'FFMPEG_STREAMS_NOT_FOUND',
           message: errors['FFMPEG_STREAMS_NOT_FOUND']
         }
+      }else{
+        this.hostWhitelist.add(hostname)
       }
       if (this.config.minHeight > 0) {
         const stream = metadata.streams.find(s => s['codec_type'] === 'video');
