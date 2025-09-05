@@ -5,8 +5,14 @@ import { TESTING } from '../constants.js'
 import { exec } from 'child_process'
 import errors from '../errors.js'
 import util from 'util'
+import https from 'https'
+import axios from 'axios'
 
 const execAsync = util.promisify(exec)
+const agent = new https.Agent({  
+  rejectUnauthorized: false
+})
+
 
 export class FFprobe {
   constructor({ config, logger }) {
@@ -31,7 +37,15 @@ export class FFprobe {
         const ffprobeOutput = (await import('../../tests/__mocks__/ffprobe.js')).default
         output = ffprobeOutput[item.url]
       } else {
-        output = await execAsync(command, { timeout })
+        if(await isStreamLive(item.url) === true){
+          output = await execAsync(command, { timeout })
+        }else{
+          return {
+            ok: false,
+            code: 'HTTP_REQUEST_TIMEOUT',
+            message: errors['HTTP_REQUEST_TIMEOUT']
+          }
+        }
       }
 
       this.logger.debug(output)
@@ -58,6 +72,17 @@ export class FFprobe {
           message: errors['FFMPEG_STREAMS_NOT_FOUND']
         }
       }
+      if (this.config.minHeight > 0) {
+        const stream = metadata.streams.find(s => s['codec_type'] === 'video');
+        let hasMinHeight = stream ? stream.height >= this.config.minHeight : false;
+        if(!stream || !hasMinHeight){
+          return {
+            ok: false,
+            code: 'CONFIG_STREAM_HAS_NOT_MIN_HEIGHT_RES',
+            message: errors['CONFIG_STREAM_HAS_NOT_MIN_HEIGHT_RES']
+          }
+        }
+      }
 
       return { ok: true, code: 'OK', metadata }
     } catch (err) {
@@ -79,5 +104,18 @@ function isJSON(str) {
     return !!JSON.parse(str)
   } catch {
     return false
+  }
+}
+
+async function isStreamLive(url) {
+  try {
+    const opcs = {
+      timeout: 1000,
+      httpsAgent: agent,
+    };
+    await axios.head(url, opcs);
+    return true;
+  } catch (error) {
+    return false;
   }
 }

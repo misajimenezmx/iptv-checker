@@ -35,6 +35,7 @@ program
   .option('-x, --proxy <url>', 'Set HTTP proxy to tunnel through')
   .option('-k, --insecure', 'Allow insecure connections when using SSL')
   .option('-D, --debug', 'Enable debug mode')
+  .option('-h, --min-height <number>', 'Minimum height/resolution to accept', 0)
   .action((str = null) => {
     stdin = str
   })
@@ -54,6 +55,7 @@ const config = {
   parallel: +options.parallel,
   delay: +options.delay,
   retry: +options.retry,
+  minHeight: +options.minHeight,
   setUp,
   afterEach
 }
