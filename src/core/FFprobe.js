@@ -120,7 +120,6 @@ export class FFprobe {
   }
 
   async isStreamLive(url) {
-    const timeout = item.timeout || this.config.timeout
     try {
       const opcs = {
         timeout: 1000,
