@@ -123,7 +123,7 @@ export class FFprobe {
     const timeout = item.timeout || this.config.timeout
     try {
       const opcs = {
-        timeout: timeout/5,
+        timeout: 1000,
         httpsAgent: agent,
       };
       await axios.head(url, opcs);
