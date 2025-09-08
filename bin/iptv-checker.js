@@ -35,6 +35,8 @@ program
   .option('-x, --proxy <url>', 'Set HTTP proxy to tunnel through')
   .option('-k, --insecure', 'Allow insecure connections when using SSL')
   .option('-D, --debug', 'Enable debug mode')
+  .option('-h, --min-height <number>', 'Minimum height/resolution to accept', 0)
+  .option('-s, --skip-already-tested', 'Skip already tested hostnames')
   .action((str = null) => {
     stdin = str
   })
@@ -54,6 +56,8 @@ const config = {
   parallel: +options.parallel,
   delay: +options.delay,
   retry: +options.retry,
+  minHeight: +options.minHeight,
+  skipAlreadyTested: options.skipAlreadyTested || false,
   setUp,
   afterEach
 }

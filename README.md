@@ -41,6 +41,8 @@ Arguments:
 - `-a, --user-agent`: HTTP User-Agent (default: `IPTVChecker/0.29.0 (https://github.com/freearhey/iptv-checker)`)
 - `-k, --insecure`: allow insecure connections when using SSL (default: `false`)
 - `-D, --debug`: enable debug mode (default: `false`)
+- `-h, --min-height`: Minimum height/resolution to accept, 0 means no resolution filtering. (default: `0`)
+- `-s, --skip-already-tested`: Skip already tested hostnames (default: `false`)
 
 ### Module
 
@@ -381,6 +383,7 @@ new IPTVChecker({
   userAgent,
   proxy,
   insecure,
+  minHeight,
   setUp,
   afterEach,
   beforeEach

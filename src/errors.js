@@ -53,5 +53,6 @@ export default {
   FFMPEG_PROTOCOL_NOT_FOUND: 'FFMPEG Protocol Not Found',
   FFMPEG_INVALID_DATA: 'FFMPEG Invalid Data',
   FFMPEG_UNDEFINED: 'FFMPEG Undefined Error',
-  FFMPEG_STREAMS_NOT_FOUND: 'FFMPEG Streams Not Found'
+  FFMPEG_STREAMS_NOT_FOUND: 'FFMPEG Streams Not Found',
+  CONFIG_STREAM_HAS_NOT_MIN_HEIGHT_RES: 'FFMPEG Stream has not Minimum height/resolution'
 }

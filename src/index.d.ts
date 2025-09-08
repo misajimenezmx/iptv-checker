@@ -7,6 +7,8 @@ export declare type IPTVCheckerOptions = {
   parallel?: number
   delay?: number
   retry?: number
+  minHeight?: number
+  skipAlreadyTested?: Boolean
   setUp?: () => Promise<void> | void
   afterEach?: () => Promise<void> | void
   beforeEach?: () => Promise<void> | void
