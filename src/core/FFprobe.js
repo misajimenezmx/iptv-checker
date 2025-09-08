@@ -120,9 +120,10 @@ export class FFprobe {
   }
 
   async isStreamLive(url) {
+    const timeout = (item.timeout || this.config.timeout)/5
     try {
       const opcs = {
-        timeout: 1000,
+        timeout: timeout < 500 ? 500 : timeout,
         httpsAgent: agent,
       };
       await axios.head(url, opcs);
