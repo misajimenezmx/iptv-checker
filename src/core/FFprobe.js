@@ -94,9 +94,9 @@ export class FFprobe {
       }
       if (this.config.minHeight > 0) {
         const stream = metadata.streams.find(s => s['codec_type'] === 'video');
-        let hasMinHeight = stream ? stream.height >= this.config.minHeight : false;
+        let hasMinHeight = !!stream && !isNaN(stream.height) ? parseInt(stream.height) >= this.config.minHeight : false;
         this.logger.debug(`hasMinHeight: ${hasMinHeight}`)
-        if(!stream || !hasMinHeight){
+        if(!hasMinHeight){
           return {
             ok: false,
             code: 'CONFIG_STREAM_HAS_NOT_MIN_HEIGHT_RES',
